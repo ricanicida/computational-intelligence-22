@@ -1,0 +1,33 @@
+[tool.black]
+exclude = "(^\\.|^__pycache__)"
+include = "(\\.py$|\\.ipynb$)"
+#include = "\\.ipynb"
+line-length = 120
+
+[tool.poetry]
+name = "computational-intelligence-22"
+version = "0.1.0"
+description = ""
+authors = ["ricanicida <ricakazama@gmail.com>"]
+readme = "README.md"
+packages = [{include = "computational_intelligence_22"}]
+
+[tool.poetry.dependencies]
+black = {extras = ["jupyter"], version = "^22.6.0"}
+jupyter = "^1.0.0"
+matplotlib = "^3.5.3"
+nero = {extras = ["jupyter"], version = "^1.0.20220202"}
+networkx = "^2.8.5"
+numpy = ">=1.23"
+pandas = "^1.4.3"
+pydot = "^1.4.2"
+python = "~3.10"
+scipy = "^1.9.0"
+seaborn = "^0.11.2"
+toml = "^0.10.2"
+tqdm = "^4.64.0"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
