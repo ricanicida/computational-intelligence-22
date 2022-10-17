@@ -4,6 +4,7 @@ import numpy as np
 
 def a_star(graph, start_node, N): 
 
+    # heuristc function that takes into account if there are new numbers and repeated numbers on the node i
     def h(i, goal):
         node = graph.nodes[i]
         h = 0        
@@ -99,7 +100,7 @@ def a_star(graph, start_node, N):
             # and if it is, update parent data and g data
             # and if the node was in the closed_list, move it to open_list
             else:
-                if g[m] + h(m, new_goal) > g[n] + cost + h(n, new_goal):
+                if g[m] + h(m, new_goal) > g[n] + cost + h(n, new_goal): # herusitc function creates a dynamic cost
                     g[m] = g[n] + cost
                     parents[m] = n
                     
