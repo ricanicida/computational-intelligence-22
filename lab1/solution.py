@@ -34,6 +34,7 @@ def a_star(graph, start_node, N):
     # and who's neighbors have been inspected
     open_list = set([start_node])
     closed_list = set([])
+    visited_nodes = 1
 
     # g contains current distances from start_node to all other nodes
     # the default value (if it's not found in the map) is +infinity
@@ -79,7 +80,7 @@ def a_star(graph, start_node, N):
 
             reconst_path.reverse()
 
-            print(f'Path found with A* search: \n{reconst_path} \n W = {w}')
+            print(f'Path found with A* search: \n{reconst_path} \nN = {N} | W = {w} | Visited nodes: {visited_nodes}')
             return w
 
 
@@ -110,6 +111,7 @@ def a_star(graph, start_node, N):
         # because all of his neighbors were inspected
         open_list.remove(n)
         closed_list.add(n)
+        visited_nodes += 1
         
     print('Path does not exist!')
     return None
