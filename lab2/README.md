@@ -5,6 +5,7 @@ The following parameters were used
 - OFFSPRING_SIZE = 20
 - GENERATIONS = 200
 - PROB = 0.5
+
 INFO:root: Genetic algorithm solution for N=5: fitness=5 w=5 (bloat=100%)
 INFO:root: Genetic algorithm solution for N=10: fitness=9 w=11 (bloat=110%)
 No solution for current population (N=20)
