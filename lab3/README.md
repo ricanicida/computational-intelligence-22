@@ -13,3 +13,5 @@ The solution was based on the code developed in class by professor Squillero.
 #### Task 3.3
 - The minmax strategy has the best performance not taking the nim sum algorithm.
 - There is a complexity constraint regarding the depth of the tree which was upper bounded by 10. Since the minmax tree should fully grow in order to get some result for the nim game, the take_one algorithm was used when depth got bigger then 10. When the number of objects in the game start to decrease the minmax will properly function.  
+
+The minmax solution was based on https://realpython.com/python-minimax-nim/
