@@ -131,11 +131,6 @@ class IntuitivePlayer(quarto.Player):
 
         if x != -1:
             return x, y
-        
-        x, y = self._return_winning_position(piece, binary_board, occurrences=1)
-
-        if x != -1:
-            return x, y
         else:
             for y in range(len(board)):
                 for x in range(len(board[y])):
