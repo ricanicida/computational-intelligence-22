@@ -127,7 +127,10 @@ class IntuitivePlayer(quarto.Player):
 
         return -1, -1
     
-    def _compute_risk(self, piece: quarto.Piece, boards: np.array, b: int, y: int, x: int) -> float:
+    def _compute_position_risk(self, piece: quarto.Piece, boards: np.array, b: int, y: int, x: int) -> float:
+        '''
+        Compute the position risk given a selected piece
+        '''
         characteristic = piece.binary[b]
         row = boards[b,y,:]
         column = boards[b,:,x]
@@ -147,7 +150,9 @@ class IntuitivePlayer(quarto.Player):
         return risk_value
     
     def _return_safest_position(self, piece: quarto.Piece, board: np.array, binary_board: np.array) -> tuple[int, int]:
-        
+        '''
+        Return the safest possible position where the risk is minimized
+        '''
         boards = np.array(self._return_characteristics_boards(binary_board))
 
         position_info = dict()
@@ -159,7 +164,7 @@ class IntuitivePlayer(quarto.Player):
                     position_info[(y,x)] = np.array([])
 
                     for b in range(len(boards)):
-                        risk_value = self._compute_risk(piece, boards, b, y, x)
+                        risk_value = self._compute_position_risk(piece, boards, b, y, x)
                         position_info[(y,x)] = np.append(position_info[(y,x)], risk_value)
                     
                     position_info[(y,x)] = np.mean(position_info[(y,x)])
@@ -170,27 +175,54 @@ class IntuitivePlayer(quarto.Player):
         y, x = safest_position
         return x, y
 
+    def _count_winning_positions(self, binary_board: np.array, board: np.array, piece: quarto.Piece) -> int:
+        '''
+        Count the winning positions for a given piece
+        '''
+        counter = 0
+        for y in range(len(board)):
+            for x in range(len(board[y])):
+                if board[y][x] < 0:
+                    row = binary_board[y,:,:].copy()
+                    row[x,:] = piece.binary
+                    row_sum = np.sum(row, axis=0)
+                    
+                    column = binary_board[:,x,:].copy()
+                    column[y,:] = piece.binary
+                    column_sum = np.sum(column, axis=0)
 
+                    if 0 in row_sum or 4 in row_sum or 0 in column_sum or 4 in column_sum:
+                        counter += 1
+                    elif x==y or x+y==3:
+                        if x==y:
+                            diagonal = np.transpose(np.diagonal(binary_board).copy())
+                            diagonal[y,:] = piece.binary
+                            diagonal_sum = np.sum(diagonal, axis=0)
+                        else:
+                            diagonal = np.transpose(np.diagonal(np.fliplr(binary_board)).copy())
+                            diagonal[y,:] = piece.binary
+                            diagonal_sum = np.sum(diagonal, axis=0)
+                        
+                        if 0 in diagonal_sum or 4 in diagonal_sum:
+                            counter += 1
+
+        return counter
+    
     def choose_piece(self) -> int:
         game = self.get_game()
-        pieces_on_board = self._get_pieces_on_board(game._binary_board)
-        total_sum = np.sum(pieces_on_board, axis=0)
-        # sort the indexes of the piece characteristic by appearance descending order
-        sorted_index = sorted(range(len(total_sum)), key=lambda i:total_sum[i], reverse=True)
-        n = 1
-        piece = self._return_piece_from_int(n, sorted_index)
-        piece_index = self._return_piece_index(piece)
+        binary_board = game._binary_board
+        board = game._board
+        pieces_left = [x for x in range(16) if x not in board]
 
-        while piece_index in game._board and n < 15:
-            n += 1
-            piece = self._return_piece_from_int(n, sorted_index)
-            piece_index = self._return_piece_index(piece)
+        pieces_winning_count = []
+        for piece_index in pieces_left:
+           piece = self._return_piece_from_int(piece_index, [0,1,2,3])
+           count = self._count_winning_positions(binary_board, board, piece)
+           pieces_winning_count.append(count)
 
-        if n == 15:
-            piece = self._return_piece_from_int(0, sorted_index)
-            piece_index = self._return_piece_index(piece)
+        safest_piece_index = pieces_left[np.argmin(pieces_winning_count)]
 
-        return piece_index
+        return safest_piece_index
 
     def place_piece(self) -> tuple[int, int]:
         game = self.get_game()
