@@ -30,14 +30,14 @@ class IntuitivePlayer(quarto.Player):
 
     def _get_pieces_on_board(self, binary_board: np.array) -> np.array:
         '''
-        Get the array containing all the pieces in the binary form
+        Get the array containing all the pieces in the binary form.
         '''
         return np.array([binary_board[i][j] for i in range(len(binary_board)) for j in range(len(binary_board[i])) if not np.isnan(binary_board[i][j].any())])
 
     def _return_piece_from_int(self, n: int, sorted_index: list) -> quarto.Piece:
         '''
-        Return a piece (quarto.Piece) given n (int)
-        The n represents the piece index if sorted_index = [0,1,2,3] 
+        Return a piece (quarto.Piece) given n (int).
+        The n represents the piece index if sorted_index = [0,1,2,3].
         '''
         binary_str = '0'*(4-len(bin(n)[2:])) + bin(n)[2:]
         sorted_booleans = np.full(shape=4, fill_value=np.nan)
@@ -48,13 +48,13 @@ class IntuitivePlayer(quarto.Player):
     
     def _return_piece_index(self, piece: quarto.Piece) -> int:
         '''
-        Return the piece (quarto.Piece) index (int)
+        Return the piece (quarto.Piece) index (int).
         '''
         return int("".join(str(x) for x in piece.binary), 2)
     
     def _return_characteristics_boards(self, binary_board: np.array) -> list():
         '''
-        Return a list containing 4 boards (one for each characteristic of a piece)
+        Return a list containing 4 boards (one for each characteristic of a piece).
         '''
         high_board = binary_board[:,:,0]
         coloured_board = binary_board[:,:,1]
@@ -66,8 +66,8 @@ class IntuitivePlayer(quarto.Player):
     
     def _return_winning_position_horizontal(self, piece: quarto.Piece, boards: list, vertical: bool=False, occurrences: int=3) -> tuple[int, int]:
         '''
-        Return one possible horizontal winning position for the selected piece
-        The function works for vertical search if vertical = True
+        Return one possible horizontal winning position for the selected piece.
+        The function works for vertical search if vertical = True.
         '''
         if vertical:
             boards = [np.transpose(board) for board in boards]
@@ -90,7 +90,7 @@ class IntuitivePlayer(quarto.Player):
     
     def _return_winning_position_diagonal(self, piece: quarto.Piece, boards: list, occurrences: int=3):
         '''
-        Return one possible diagonal winning position for the selected piece
+        Return one possible diagonal winning position for the selected piece.
         '''
         for b in range(len(boards)):
             diagonals = [np.diagonal(boards[b]), np.diagonal(np.fliplr(boards[b]))] 
@@ -109,7 +109,7 @@ class IntuitivePlayer(quarto.Player):
     
     def _return_winning_position(self, piece: quarto.Piece, binary_board: np.array, occurrences: int=3) -> tuple[int, int]:
         '''
-        Return one possible winning position for the selected piece
+        Return one possible winning position for the selected piece.
         '''
         boards = self._return_characteristics_boards(binary_board)
 
@@ -129,7 +129,9 @@ class IntuitivePlayer(quarto.Player):
     
     def _compute_position_risk(self, piece: quarto.Piece, boards: np.array, b: int, y: int, x: int) -> float:
         '''
-        Compute the position risk given a selected piece
+        Compute the position risk given a selected piece and a given characteristic (b).
+        The risk for each piece characteristic is given by the mean over the characteristic
+        match count for each direction (horizontal, vertical, diagonal (if it is the case)).
         '''
         characteristic = piece.binary[b]
         row = boards[b,y,:]
@@ -151,7 +153,7 @@ class IntuitivePlayer(quarto.Player):
     
     def _return_safest_position(self, piece: quarto.Piece, board: np.array, binary_board: np.array) -> tuple[int, int]:
         '''
-        Return the safest possible position where the risk is minimized
+        Return the safest possible position where the risk is minimized.
         '''
         boards = np.array(self._return_characteristics_boards(binary_board))
 
@@ -177,7 +179,7 @@ class IntuitivePlayer(quarto.Player):
 
     def _count_winning_positions(self, binary_board: np.array, board: np.array, piece: quarto.Piece) -> int:
         '''
-        Count the winning positions for a given piece
+        Count the winning positions for a given piece.
         '''
         counter = 0
         for y in range(len(board)):
